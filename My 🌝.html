@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feliz Aniversário, Luana!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      backdrop-filter: brightness(0.7);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: carrosselFundo 40s infinite;
+    }
+
+    @keyframes carrosselFundo {
+      25% { background-image: url('https://raw.githubusercontent.com/Ronyx32/Para-luana/refs/heads/main/Imagem%20do%20WhatsApp%20de%202025-05-11%20%C3%A0(s)%2018.13.55_b3fd0273.jpg'); }
+      40% { background-image: url('https://raw.githubusercontent.com/Ronyx32/Para-luana/refs/heads/main/Imagem%20do%20WhatsApp%20de%202025-05-11%20%C3%A0(s)%2018.13.34_002d80e7.jpg'); }
+      65% { background-image: url('https://raw.githubusercontent.com/Ronyx32/Para-luana/refs/heads/main/Imagem%20do%20WhatsApp%20de%202025-05-11%20%C3%A0(s)%2018.13.46_f2a7909a.jpg'); }
+      75% { background-image: url('https://raw.githubusercontent.com/Ronyx32/Para-luana/refs/heads/main/Imagem%20do%20WhatsApp%20de%202025-05-11%20%C3%A0(s)%2018.13.09_156e0e1e.jpg'); }
+      100% { background-image: url('https://raw.githubusercontent.com/Ronyx32/Para-luana/refs/heads/main/Imagem%20do%20WhatsApp%20de%202025-05-11%20%C3%A0(s)%2018.13.55_b3fd0273.jpg'); }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .mensagem {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 20px;
+      max-width: 90%;
+      margin-bottom: 40px;
+      animation: fadein 2s ease-in;
+      display: none;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      animation: flutuar 2s ease-in-out infinite;
+    }
+
+    #typed {
+      font-size: 1.1em;
+      line-height: 1.6em;
+      margin: 20px 0;
+      white-space: pre-wrap;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff69b4;
+      color: white;
+      cursor: pointer;
+    }
+
+    #extra {
+      margin-top: 20px;
+      display: none;
+      font-size: 1.3em;
+      background-color: rgba(255,255,255,0.2);
+      padding: 15px;
+      border-radius: 15px;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 48px;
+      opacity: 0.9;
+      animation: subir 8s infinite ease-in;
+    }
+
+    .presente {
+      font-size: 80px;
+      cursor: pointer;
+      animation: flutuar 3s ease-in-out infinite;
+      z-index: 2;
+      position: relative;
+      margin-top: 30vh;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes flutuar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes subir {
+      0% { transform: translateY(100vh); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <audio id="musicaFundo" loop>
+    <source src="https://github.com/Ronyx32/Para-luana/blob/main/Toquinho.mp3" type="audio/mp3">
+  </audio>
+
+  <audio id="efeitoSurpresa">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-interface-hint-notification-911.mp3" type="audio/mp3">
+  </audio>
+
+  <div id="presenteFlutuante" class="presente" onclick="abrirPresente()">🎁</div>
+
+  <div class="emoji" style="left:10%; animation-delay: 0s; color: #FFD700">🎈</div>
+  <div class="emoji" style="left:25%; animation-delay: 2s; color: #FF69B4">🌸</div>
+  <div class="emoji" style="left:50%; animation-delay: 4s; color: #ADFF2F">🎉</div>
+  <div class="emoji" style="left:70%; animation-delay: 6s; color: #00BFFF">✨</div>
+  <div class="emoji" style="left:85%; animation-delay: 8s; color: #FF4500">🎁</div>
+
+  <div id="mensagemConteudo" class="mensagem">
+    <h1>Feliz Aniversário, Minha Luana 🌸✨</h1>
+    <p id="typed"></p>
+    <button onclick="mostrarMensagem()">Clique aqui para uma surpresa</button>
+    <p id="extra">Parabéns você ganhou um dia especial cmg pode pedir tudo o que quiser na cantina da Facul 💛</p>
+  </div>
+
+  <script>
+    const texto = `Lembro como se fosse hoje: a gente se conhecendo na sala de aula, rindo de piadas de anime, trocando mensagens até madrugada. Olha a gente agora, trabalhando, estudando juntos na mesma faculdade... Mas sabe o que não mudou? Essa conexão especial que a gente construiu e que ninguém nunca vai conseguir substituir.
+
+Quando estou com você, eu me sinto:
+☁️ Leve como aquelas nossas conversas sem importância que duravam horas
+🛡️ Protegido pra compartilhar meus medos e fraquezas
+💫 Entendido de um jeito que pouquíssimas pessoas no mundo conseguem me fazer sentir
+
+Recentemente tentaram nos afastar... Mas eu tomei a decisão mais certa da minha vida porque você vale mais do que qualquer opinião alheia. Você é:
+🌻 A que me faz acreditar que dias melhores sempre vêm
+📚 Minha parceira de estudos (e de risadas nos intervalos e na aulas)
+💖 Uma das pessoas mais importantes da minha história
+
+Que seu aniversário seja tão incrível quanto você é pra mim. Que a gente continue cultivando essa conexão que começou com anime e virou um dos melhores capítulos da minha vida.
+
+Feliz aniversário, Luana. Obrigado por existir exatamente do jeito que você é.
+
+Com todo carinho do mundo,
+Rony`;
+
+    let i = 0;
+    function digitar() {
+      if (i < texto.length) {
+        document.getElementById("typed").innerHTML += texto.charAt(i);
+        i++;
+        setTimeout(digitar, 30);
+      }
+    }
+
+    function abrirPresente() {
+      document.getElementById("presenteFlutuante").style.display = "none";
+      document.getElementById("mensagemConteudo").style.display = "block";
+      document.getElementById("musicaFundo").play();
+      digitar();
+    }
+
+    function mostrarMensagem() {
+      document.getElementById('extra').style.display = 'block';
+      document.getElementById("efeitoSurpresa").play();
+      launchFireworks();
+    }
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function createFirework(x, y) {
+      const colors = ['#ff0043', '#ffcc00', '#00e5ff', '#adff2f', '#ff69b4'];
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x,
+          y,
+          radius: Math.random() * 2 + 1,
+          angle: Math.random() * 2 * Math.PI,
+          speed: Math.random() * 5 + 2,
+          alpha: 1,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+
+    function animateFireworks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, index) => {
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
+        p.alpha -= 0.01;
+        if (p.alpha <= 0) particles.splice(index, 1);
+        ctx.beginPath();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animateFireworks);
+    }
+
+    function launchFireworks() {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => createFirework(window.innerWidth / 2, window.innerHeight / 2), i * 500);
+      }
+    }
+
+    animateFireworks();
+  </script>
+</body>
+</html>
