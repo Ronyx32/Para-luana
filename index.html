@@ -1,9 +1,18 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feliz Aniversário, Luana!</title>
+
+  <!-- Preload correto das imagens -->
+
+  <link rel="preload" as="image" href="/L1.jpg">
+  <link rel="preload" as="image" href="/L2.jpg">
+  <link rel="preload" as="image" href="/L3.jpg">
+  <link rel="preload" as="image" href="/L4.jpg">
+
   <style>
     body {
       margin: 0;
@@ -17,7 +26,7 @@
       text-align: center;
       backdrop-filter: brightness(0.7);
       overflow-x: hidden;
-      overflow-y: auto;
+      position: relative;
     }
 
     body::before {
@@ -34,13 +43,13 @@
       animation: carrosselFundo 40s infinite;
     }
 
-@keyframes carrosselFundo {
-  0%   { background-image: url('/L1.jpg'); }
-  25%  { background-image: url('/L1.jpg'); }
-  40%  { background-image: url('/L2.jpg'); }
-  65%  { background-image: url('/L3.jpg'); }
-  100% { background-image: url('/L4.jpg'); }
-}
+    @keyframes carrosselFundo {
+      0%   { background-image: url('/L1.jpg'); }
+      25%  { background-image: url('/L1.jpg'); }
+      40%  { background-image: url('/L2.jpg'); }
+      65%  { background-image: url('/L3.jpg'); }
+      100% { background-image: url('/L4.jpg'); }
+    }
 
     canvas {
       position: fixed;
@@ -59,6 +68,7 @@
       padding: 20px;
       border-radius: 20px;
       max-width: 90%;
+      width: 600px;
       margin-bottom: 40px;
       animation: fadein 2s ease-in;
       display: none;
@@ -75,6 +85,7 @@
       line-height: 1.6em;
       margin: 20px 0;
       white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     button {
@@ -86,6 +97,16 @@
       background-color: #ff69b4;
       color: white;
       cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background-color: #ff1493;
+    }
+
+    button:active {
+      transform: scale(0.95);
     }
 
     #extra {
@@ -95,6 +116,7 @@
       background-color: rgba(255,255,255,0.2);
       padding: 15px;
       border-radius: 15px;
+      animation: fadein 1s ease-in;
     }
 
     .emoji {
@@ -102,6 +124,7 @@
       font-size: 48px;
       opacity: 0.9;
       animation: subir 8s infinite ease-in;
+      pointer-events: none;
     }
 
     .presente {
@@ -111,11 +134,43 @@
       z-index: 2;
       position: relative;
       margin-top: 30vh;
+      transition: transform 0.3s;
+      user-select: none;
+    }
+
+    .presente:hover {
+      transform: scale(1.2);
+    }
+
+    .presente:active {
+      transform: scale(0.9);
+    }
+
+    #audioControl {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      background-color: rgba(0, 0, 0, 0.6);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    #audioControl:hover {
+      transform: scale(1.1);
     }
 
     @keyframes fadein {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes flutuar {
@@ -128,21 +183,44 @@
       20% { opacity: 1; }
       100% { transform: translateY(-10vh); opacity: 0; }
     }
+
+    /* Responsividade para mobile */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      
+      #typed {
+        font-size: 1em;
+      }
+      
+      .presente {
+        font-size: 60px;
+        margin-top: 25vh;
+      }
+      
+      .emoji {
+        font-size: 32px;
+      }
+
+      .mensagem {
+        width: 90%;
+        padding: 15px;
+      }
+    }
   </style>
+
 </head>
 <body>
-  <!-- Preload das imagens -->
-  <div style="display:none;">
-  <img src="/L1.jpg" alt="">
-  <img src="/L2.jpg" alt="">
-  <img src="/L3.jpg" alt="">
-  <img src="/L4.jpg" alt="">
-</div>
-
   <canvas id="canvas"></canvas>
-  <audio autoplay loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mp3">
+
+  <!-- Áudio com controle manual (sem autoplay) -->
+
+  <audio id="bgMusic" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
   </audio>
+
+<button id="audioControl" onclick="toggleAudio()" title="Clique para música">🔇</button>
 
   <div id="presenteFlutuante" class="presente" onclick="abrirPresente()">🎁</div>
 
@@ -153,16 +231,25 @@
   <div class="emoji" style="left:85%; animation-delay: 8s; color: #FF4500">🎁</div>
 
   <div id="mensagemConteudo" class="mensagem">
-    <h1>Que bom que não esqueceu!!</h1>
+    <h1>Feliz Aniversário, Luana! 🎉</h1>
     <p id="typed"></p>
     <button onclick="mostrarMensagem()">Clique aqui para uma surpresa</button>
-    <p id="extra">vishhhhhkkk.........👻</p>
+    <p id="extra">Parabéns! Que seu dia seja incrível! 🎂✨🎈</p>
   </div>
 
   <script>
-    const texto = `teste................................................................................................................................................................................................................................................................................................................................................
-    ..............................................................................................................................,iiiiiiiiiiiihishihi`;
+    // IMPORTANTE: Coloque sua mensagem personalizada aqui!
+    const texto = `Hoje é um dia muito especial!
+    
+Quero te desejar um aniversário repleto de alegria, amor e realizações.
+
+Que todos os seus sonhos se tornem realidade e que você continue espalhando essa luz por onde passar.
+
+Você merece tudo de mais lindo que a vida pode oferecer! 💖`;
+
     let i = 0;
+    let audioPlaying = false;
+    
     function digitar() {
       if (i < texto.length) {
         document.getElementById("typed").innerHTML += texto.charAt(i);
@@ -175,6 +262,11 @@
       document.getElementById("presenteFlutuante").style.display = "none";
       document.getElementById("mensagemConteudo").style.display = "block";
       digitar();
+      
+      // Tentar iniciar áudio após interação do usuário
+      if (!audioPlaying) {
+        toggleAudio();
+      }
     }
 
     function mostrarMensagem() {
@@ -182,15 +274,38 @@
       launchFireworks();
     }
 
+    function toggleAudio() {
+      const audio = document.getElementById('bgMusic');
+      const button = document.getElementById('audioControl');
+      
+      if (audioPlaying) {
+        audio.pause();
+        button.textContent = '🔇';
+        audioPlaying = false;
+      } else {
+        audio.play().then(() => {
+          button.textContent = '🔊';
+          audioPlaying = true;
+        }).catch(err => {
+          console.log('Erro ao tocar áudio:', err);
+        });
+      }
+    }
+
+    // Canvas e fogos de artifício
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     let particles = [];
 
+    // Ajustar quantidade de partículas baseado no dispositivo
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 30 : 80;
+
     function createFirework(x, y) {
       const colors = ['#ff0043', '#ffcc00', '#00e5ff', '#adff2f', '#ff69b4'];
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < particleCount; i++) {
         particles.push({
           x, y,
           radius: Math.random() * 2 + 1,
@@ -204,28 +319,50 @@
 
     function animateFireworks() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, index) => {
+      
+      // Corrigido: filtrar em vez de splice durante iteração
+      particles = particles.filter(p => {
         p.x += Math.cos(p.angle) * p.speed;
         p.y += Math.sin(p.angle) * p.speed;
         p.alpha -= 0.01;
-        if (p.alpha <= 0) particles.splice(index, 1);
-        ctx.beginPath();
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = p.color;
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
+        
+        if (p.alpha > 0) {
+          ctx.beginPath();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          return true;
+        }
+        return false;
       });
+      
       ctx.globalAlpha = 1;
       requestAnimationFrame(animateFireworks);
     }
 
     function launchFireworks() {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
       for (let i = 0; i < 5; i++) {
-        setTimeout(() => createFirework(window.innerWidth / 2, window.innerHeight / 2), i * 500);
+        setTimeout(() => {
+          // Variar posição dos fogos
+          const offsetX = (Math.random() - 0.5) * 300;
+          const offsetY = (Math.random() - 0.5) * 200;
+          createFirework(centerX + offsetX, centerY + offsetY);
+        }, i * 500);
       }
     }
 
+    // Redimensionar canvas quando janela muda
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
     animateFireworks();
   </script>
+
 </body>
 </html>
